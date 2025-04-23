@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landmark Creator</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/main.js" defer></script>
+</head>
+<body>
+
+    <h2>Click on the Map to Add Landmarks</h2>
+    <div id="map"></div>
+    
+    <h3>Selected Landmarks</h3>
+    <ul id="landmarkList"></ul>
+    
+    <button onclick="showAddNotesForm()">Add Notes</button>
+    <button onclick="sendLandmarks()">Visited Landmarks</button>
+    <button onclick="sendLandmarks()">Create Visiting Plans</button>
+    
+    <div id="form-background"></div>
+
+    <div id="add-notes-form-container" class="form-container">
+        <form id="add-notes-form">
+            <label for="note">Note</label>
+            <textarea name="note" id="note"></textarea>
+            <button type="submit">Submit</button>
+            <button>Cancel</button>
+        </form>
+    </div>
+</body>
+</html>
