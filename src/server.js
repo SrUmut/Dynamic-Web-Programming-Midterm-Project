@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 
 app.post("/api/landmarks", express.json(), (req, res) => {
     console.log(req.body);
-    addLandmarks(req.body.landmarks, req.body.note);
+    addLandmarks(req.body);
     res.json(req.body);
 });
 

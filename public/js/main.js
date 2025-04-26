@@ -1,5 +1,6 @@
 // Initialize map
 var map = L.map("map").setView([20, 0], 2); // Default global view
+const PORT = 8000;
 
 // Add OpenStreetMap tile layer
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -47,14 +48,14 @@ function updateLandmarkList() {
 }
 
 // Send landmarks to backend
-function sendLandmarks(note) {
-    fetch("http://localhost:8000/api/landmarks", {
+function sendLandmarks(landmarks) {
+    fetch(`http://localhost:${PORT}/api/landmarks`, {
         // Replace with actual backend URL
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ landmarks: landmarks, note: note }),
+        body: JSON.stringify(landmarks),
     })
         .then((response) => response.json())
         .then((data) =>
@@ -84,6 +85,55 @@ function showAddNotesForm() {
         alert("No landmarks selected!");
         return;
     }
+    for (let i = 0; i < landmarks.length; i++) {
+        const lm = landmarks[i];
+        const name_input_id = `add-notes-form-row-${i}-name-input`;
+        const description_input_id = `add-notes-form-row-${i}-description-input`;
+        const category_input_id = `add-notes-form-row-${i}-category-input`;
+
+        const lm_container = document.createElement("span");
+        lm_container.classList.add("add-notes-form-row");
+        const lm_label = create_label(
+            `lat: ${lm.latitude}\tlng: ${lm.longitude}`,
+            ""
+        );
+        lm_label.style.fontWeight = "bold";
+        const name_label = create_label("Name:", name_input_id);
+        const name_input = create_text_input(name_input_id, "name-input");
+        const description_label = create_label(
+            "Description:",
+            description_input_id
+        );
+        const description_input = create_text_input(
+            description_input_id,
+            "description-input"
+        );
+        const category_label = create_label("Category:", "");
+        const category_input = create_select_input(
+            category_input_id,
+            "category-input",
+            "cultural",
+            "historical",
+            "natural"
+        );
+
+        lm_container.appendChild(lm_label);
+        lm_container.appendChild(name_label);
+        lm_container.appendChild(name_input);
+        lm_container.appendChild(description_label);
+        lm_container.appendChild(description_input);
+        lm_container.appendChild(category_label);
+        lm_container.appendChild(category_input);
+
+        add_notes_form.appendChild(lm_container);
+    }
+    const button_container = document.createElement("span");
+    button_container.appendChild(create_button("Submit", "submit"));
+    button_container.appendChild(
+        create_button("Cancel", "", closeAddNotesForm)
+    );
+    add_notes_form.appendChild(button_container);
+
     form_background.style.display = "block";
     add_notes_form_container.style.display = "flex";
     document.body.classList.add("stop-scrolling");
@@ -92,18 +142,42 @@ function showAddNotesForm() {
 function closeAddNotesForm() {
     form_background.style.display = "none";
     add_notes_form_container.style.display = "none";
+    document.body.classList.remove("stop-scrolling");
+    add_notes_form.innerHTML = "";
 }
 
 add_notes_form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const note = add_notes_form.querySelector("textarea");
-    sendLandmarks(note.value);
+    landmarks_to_send = [];
+    const rows = add_notes_form.querySelectorAll(".add-notes-form-row");
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const name_input = row.querySelector(".name-input");
+        const description_input = row.querySelector(".description-input");
+        const category_input = row.querySelector(".category-input");
+        landmarks_to_send.push({
+            latitude: landmarks[i].latitude,
+            longitude: landmarks[i].longitude,
+            name: name_input.value,
+            description: description_input.value,
+            category: category_input.value,
+        });
+    }
+    sendLandmarks(landmarks_to_send);
 
     closeAddNotesForm();
-    note.value = "";
     landmarks = [];
     updateLandmarkList();
     for (let marker of markers) {
         marker.remove();
     }
 });
+
+function getLandmarks() {
+    fetch(`http://localhost:${PORT}/api/landmarks`)
+        .then((response) => response.json())
+        .then((data) =>
+            alert("Data received successfully: " + JSON.stringify(data))
+        )
+        .catch((error) => console.error("Error:", error));
+}
