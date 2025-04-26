@@ -68,7 +68,6 @@ function removeLandmark(lat, lng) {
     for (let i = 0; i < landmarks.length; i++) {
         const landmark = landmarks[i];
         if (landmark.latitude === lat && landmark.longitude === lng) {
-            console.log("found it");
             landmarks.splice(i, 1);
         }
     }
@@ -173,11 +172,85 @@ add_notes_form.addEventListener("submit", (event) => {
     }
 });
 
+const show_landmarks_container = document.querySelector(
+    "#show-landmarks-container"
+);
+
+const update_landmarks_pane = document.querySelector("#update-landmarks-pane");
+
+function updateLandmarksFactory(landmarks) {
+    return () => {
+        const table = update_landmarks_pane.querySelector("table");
+        const tr_list = table.querySelectorAll("tr");
+        for (let i = 1; i < landmarks.length; i++) {
+            const lm = landmarks[i - 1];
+            const tr = tr_list[i];
+            if (
+                lm.visited !== tr.querySelector(".checkbox").checked ||
+                lm.name !== tr.querySelector(".name-input").value ||
+                lm.description !==
+                    tr.querySelector(".description-input").value ||
+                lm.category !== tr.querySelector(".category-input").value
+            ) {
+                fetch(`/api/landmarks/${lm.id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        latitude: lm.latitude,
+                        longitude: lm.longitude,
+                        name: tr.querySelector(".name-input").value,
+                        description:
+                            tr.querySelector(".description-input").value,
+                        category: tr.querySelector(".category-input").value,
+                        visited: tr.querySelector(".checkbox").checked,
+                    }),
+                });
+            }
+        }
+
+        closeLandmarkds();
+    };
+}
+
+function showLandmarks(landmarks) {
+    const table = document.createElement("table");
+    let tr = create_tr_h(
+        "Visited",
+        "Location",
+        "Name",
+        "Description",
+        "Category"
+    );
+    table.appendChild(tr);
+
+    for (let landmark of landmarks) table.appendChild(create_tr_d(landmark));
+
+    update_landmarks_pane.appendChild(table);
+    update_landmarks_pane.appendChild(
+        create_button("Update", "", updateLandmarksFactory(landmarks))
+    );
+    update_landmarks_pane.appendChild(
+        create_button("Close", "", closeLandmarkds)
+    );
+    form_background.style.display = "block";
+    show_landmarks_container.style.display = "flex";
+    document.body.classList.add("stop-scrolling");
+}
+
+function closeLandmarkds() {
+    form_background.style.display = "none";
+    show_landmarks_container.style.display = "none";
+    document.body.classList.remove("stop-scrolling");
+    update_landmarks_pane.innerHTML = "";
+}
+
 function getLandmarks() {
     fetch(`http://localhost:${PORT}/api/landmarks`)
         .then((response) => response.json())
-        .then((data) =>
-            alert("Data received successfully: " + JSON.stringify(data))
-        )
+        .then((data) => {
+            showLandmarks(data);
+        })
         .catch((error) => console.error("Error:", error));
 }

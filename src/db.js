@@ -16,6 +16,14 @@ db.prepare(
     );`
 ).run();
 
+db.prepare(
+    `CREATE TABLE IF NOT EXISTS 'visited_landmarks' (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    visited_date DATE,
+    visitor TEXT
+    );`
+).run();
+
 function addLandmarks(landmark_list) {
     if (landmark_list.length <= 0) return;
 
@@ -36,4 +44,28 @@ function getLandmarks() {
     return db.prepare(`SELECT * FROM landmarks;`).all();
 }
 
-module.exports = { addLandmarks, getLandmarks };
+function getLandmark(id) {
+    return db.prepare(`SELECT * FROM landmarks WHERE id = ${id};`).get();
+}
+
+function updateLandmark(id, landmark) {
+    let query =
+        `UPDATE landmarks
+        SET latitude = ${landmark.latitude}, longitude = ${landmark.longitude}, ` +
+        `name = '${landmark.name}', description = '${landmark.description}',` +
+        `category = '${landmark.category}'
+        WHERE id = ${id}`;
+    return db.prepare(query).run();
+}
+
+function deleteLandmark(id) {
+    return db.prepare(`DELETE FROM landmarks WHERE id = ${id};`).run();
+}
+
+module.exports = {
+    addLandmarks,
+    getLandmarks,
+    getLandmark,
+    updateLandmark,
+    deleteLandmark,
+};
