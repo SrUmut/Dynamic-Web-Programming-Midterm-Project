@@ -18,19 +18,14 @@
     <h3>Selected Landmarks</h3>
     <ul id="landmarkList"></ul>
     
-    <button onclick="showAddNotesForm()">Add Notes</button>
-    <button onclick="getLandmarks()">Landmarks</button>
-    <button onclick="">Visited Landmarks</button>
-    <button onclick="sendLandmarks()">Create Visiting Plans</button>
+    <button onclick="">Add Notes</button>
+    <button onclick="showLandmarks()">Landmarks</button>
+    <button onclick="showVisitedLandmarks()">Visited Landmarks</button>
+    <button onclick="">Create Visiting Plans</button>
     
-    <div id="form-background"></div>
-
-    <div id="add-notes-form-container" class="container">
-        <form id="add-notes-form">
-        </form>
-    </div>
-    <div id="show-landmarks-container" class="container">
-        <div id="update-landmarks-pane"></div>
+    <div id="container">
+        <div id="add-notes-pane" class="pane"></div>
+        <div id="show-landmarks-pane" class="pane"></div>
     </div>
 </body>
 </html>

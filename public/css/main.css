@@ -33,68 +33,30 @@ button:hover {
     box-sizing: border-box;
 }
 
-#form-background{
+#container{
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    position: fixed;
-    background-color: #000;
-    opacity: 0.75;
-    z-index: 2;
-}
-
-.container {
     width: 100vw;
     height: 100vh;
     display: none;
-    z-index: 3;
     position: fixed;
-    top: 0;
-    left: 0;
+    background-color: #000;
+    opacity: 0.85;
+    z-index: 2;
     align-items: center;
     justify-content: center;
 }
 
-#add-notes-form {
-    border: #0056b3 1px solid;
-    position: static;
-    display: flex;
-    flex-direction: column;
+.pane {
     background-color: white;
-    padding: 10px;
-    border-radius: 10px;
-    align-items: center;
-}
-
-#update-landmarks-pane { 
     border: #0056b3 1px solid;
-    position: static;
-    flex-direction: column;
-    background-color: white;
-    padding: 10px;
     border-radius: 10px;
-    align-items: center;
-}
-
-#update-landmarks-pane button {
-    margin: 0px 20px;
+    display: none;
+    position: static;
+    padding: 20px;
 }
 
 td {
     padding: 10px 20px;
-}
-
-#add-notes-form  span {
-    margin: 10px;
-}
-
-#add-notes-form span * {
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-#add-notes-form>button {
-    width: fit-content;
+    text-align: left;
 }

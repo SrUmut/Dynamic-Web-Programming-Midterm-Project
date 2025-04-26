@@ -1,5 +1,5 @@
 /node_modules
-/description.pdf
+*.pdf
 .DS_Store
 .vscode
 /db/*
